@@ -1,5 +1,6 @@
-'''This is the schema for bike_data table:'''
-'This is the schema for bike_data table:'
+
+-- Schema for bike_data table
+DESCRIBE bike_data;
 'column_name','column_type','null','key','default','extra'
 'tripduration','BIGINT','YES',NULL,NULL,NULL
 'starttime','TIMESTAMP','YES',NULL,NULL,NULL
@@ -29,10 +30,12 @@
 'end_lat','VARCHAR','YES',NULL,NULL,NULL
 'end_lng','VARCHAR','YES',NULL,NULL,NULL
 'member_casual','VARCHAR','YES',NULL,NULL,NULL
+SELECT '';
 ''''''
 ''
-'''This is the schema for central_park_weather table:'''
-'This is the schema for central_park_weather table:'
+
+-- Schema for central_park_weather table
+DESCRIBE central_park_weather;
 'column_name','column_type','null','key','default','extra'
 'STATION','VARCHAR','YES',NULL,NULL,NULL
 'NAME','VARCHAR','YES',NULL,NULL,NULL
@@ -43,19 +46,23 @@
 'SNWD','DOUBLE','YES',NULL,NULL,NULL
 'TMAX','BIGINT','YES',NULL,NULL,NULL
 'TMIN','BIGINT','YES',NULL,NULL,NULL
+SELECT '';
 ''''''
 ''
-'''This is the schema for bike_data table:'''
-'This is the schema for bike_data table:'
+
+-- Schema for fhv_bases table
+DESCRIBE fhv_bases;
 'column_name','column_type','null','key','default','extra'
 'base_number','VARCHAR','YES',NULL,NULL,NULL
 'base_name','VARCHAR','YES',NULL,NULL,NULL
 'dba','VARCHAR','YES',NULL,NULL,NULL
 'dba_category','VARCHAR','YES',NULL,NULL,NULL
+SELECT '';
 ''''''
 ''
-'''This is the schema for fhv_tripdata table:'''
-'This is the schema for fhv_tripdata table:'
+
+-- Schema for fhv_tripdata table
+DESCRIBE fhv_tripdata;
 'column_name','column_type','null','key','default','extra'
 'dispatching_base_num','VARCHAR','YES',NULL,NULL,NULL
 'pickup_datetime','TIMESTAMP','YES',NULL,NULL,NULL
@@ -65,10 +72,12 @@
 'SR_Flag','INTEGER','YES',NULL,NULL,NULL
 'Affiliated_base_number','VARCHAR','YES',NULL,NULL,NULL
 'filename','VARCHAR','YES',NULL,NULL,NULL
+SELECT '';
 ''''''
 ''
-'''This is the schema for fhvhv_tripdata table:'''
-'This is the schema for fhvhv_tripdata table:'
+
+-- Schema for fhvhv_tripdata table
+DESCRIBE fhvhv_tripdata;
 'column_name','column_type','null','key','default','extra'
 'hvfhs_license_num','VARCHAR','YES',NULL,NULL,NULL
 'dispatching_base_num','VARCHAR','YES',NULL,NULL,NULL
@@ -95,10 +104,12 @@
 'wav_request_flag','VARCHAR','YES',NULL,NULL,NULL
 'wav_match_flag','VARCHAR','YES',NULL,NULL,NULL
 'filename','VARCHAR','YES',NULL,NULL,NULL
+SELECT '';
 ''''''
 ''
-'''This is the schema for green_tripdata table:'''
-'This is the schema for green_tripdata table:'
+
+-- Schema for green_tripdata table
+DESCRIBE green_tripdata;
 'column_name','column_type','null','key','default','extra'
 'VendorID','BIGINT','YES',NULL,NULL,NULL
 'lpep_pickup_datetime','TIMESTAMP','YES',NULL,NULL,NULL
@@ -121,10 +132,12 @@
 'trip_type','DOUBLE','YES',NULL,NULL,NULL
 'congestion_surcharge','DOUBLE','YES',NULL,NULL,NULL
 'filename','VARCHAR','YES',NULL,NULL,NULL
+SELECT '';
 ''''''
 ''
-'''This is the schema for yellow_tripdata table:'''
-'This is the schema for yellow_tripdata table:'
+
+-- Schema for yellow_tripdata table
+DESCRIBE yellow_tripdata;
 'column_name','column_type','null','key','default','extra'
 'VendorID','BIGINT','YES',NULL,NULL,NULL
 'tpep_pickup_datetime','TIMESTAMP','YES',NULL,NULL,NULL
@@ -146,5 +159,7 @@
 'congestion_surcharge','DOUBLE','YES',NULL,NULL,NULL
 'airport_fee','DOUBLE','YES',NULL,NULL,NULL
 'filename','VARCHAR','YES',NULL,NULL,NULL
+SELECT '';
 ''''''
 ''
+
