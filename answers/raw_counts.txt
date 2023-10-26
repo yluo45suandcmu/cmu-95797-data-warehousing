@@ -1,0 +1,7 @@
+Row count in bike_data: 4780363
+Row count in central_park_weather: 2984
+Row count in fhv_bases: 1097
+Row count in fhv_tripdata: 3008649
+Row count in fhvhv_tripdata: 32182272
+Row count in green_tripdata: 238718
+Row count in yellow_tripdata: 5454972
