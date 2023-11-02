@@ -16,6 +16,7 @@ renamed as (
         snwd::double as snwd,
         tmax::int as tmax,
         tmin::int as tmin,
+        filename
     
     from source
 
