@@ -5,38 +5,53 @@ with source as (
 ),
 
 renamed as (
-    
+
     select
-        tripduration::int as tripduration,
-        COALESCE(started_at::timestamp, starttime::timestamp) AS started_at,
-        COALESCE(ended_at::timestamp, stoptime::timestamp) AS ended_at,
-        COALESCE(start_station_id::double, "start station id"::double) AS start_station_id,
-        COALESCE(end_station_id::double, "end station id"::double) AS end_station_id,
-        COALESCE(start_station_name, "start station name") AS start_station_name,
-        COALESCE(end_station_name, "end station name") AS end_station_name,
-        COALESCE(start_lat::double, "start station latitude"::double) AS start_lat,
-        COALESCE(start_lng::double, "start station longitude"::double) AS start_lng,
-        COALESCE(end_lat::double, "end station latitude"::double) AS end_lat,
-        COALESCE(end_lng::double, "end station longitude"::double) AS end_lng,
-        bikeid::int as bikeid,
-        "birth year"::int as birth_year,
-        {{ convert_gender('gender') }} as gender,
+        tripduration,
+        starttime,
+        stoptime,
+        "start station id",
+        "start station name",
+        "start station latitude",
+        "start station longitude",
+        "end station id",
+        "end station name",
+        "end station latitude",
+        "end station longitude",
+        bikeid,
+        usertype,
+        "birth year",
+        gender,
         ride_id,
         rideable_type,
-        COALESCE(member_casual, 
-            CASE 
-                WHEN usertype = 'Subscriber' THEN 'member' 
-                WHEN usertype = 'Customer' THEN 'casual' 
-                ELSE usertype 
-            END) as member_type,
+        started_at,
+        ended_at,
+        start_station_name,
+        start_station_id,
+        end_station_name,
+        end_station_id,
+        start_lat,
+        start_lng,
+        end_lat,
+        end_lng,
+        member_casual,
         filename
 
     from source
 
-    where 
-        tripduration > 0 AND 
-        started_at <= '2022-12-31' AND 
-        ended_at <= '2022-12-31'
 )
 
-select * from renamed
+select
+	coalesce(starttime, started_at)::timestamp as started_at_ts,
+	coalesce(stoptime, ended_at)::timestamp as ended_at_ts,
+	coalesce(tripduration::int,datediff('second', started_at_ts, ended_at_ts)) tripduration,
+	coalesce("start station id", start_station_id) as start_station_id,  
+	coalesce("start station name", start_station_name) as start_station_name,
+	coalesce("start station latitude", start_lat)::double as start_lat,
+	coalesce("start station longitude", start_lng)::double as start_lng, 
+	coalesce("end station id", end_station_id) as end_station_id,  
+	coalesce("end station name", end_station_name) as end_station_name,
+	coalesce("end station latitude", end_lat)::double as end_lat,
+	coalesce("end station longitude", end_lng)::double as end_lng,
+	filename
+from renamed
