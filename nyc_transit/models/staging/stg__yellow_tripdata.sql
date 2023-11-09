@@ -10,7 +10,7 @@ renamed as (
         vendorid,
         tpep_pickup_datetime,
         tpep_dropoff_datetime,
-        passenger_count,
+        passenger_count::int as passenger_count,
         trip_distance,
         ratecodeid,
         {{ convert_to_boolean('store_and_fwd_flag') }} AS store_and_fwd_flag,

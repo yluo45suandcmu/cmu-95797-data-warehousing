@@ -1,0 +1,370 @@
+models:
+  - name: stg__bike_data
+    description: "Historical data on Citi Bike trips, excluding staff service trips, test station trips, and trips under 60 seconds."
+    columns:
+      - name: started_at_ts
+        description: "Trip start time."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: timestamp
+
+      - name: ended_at_ts
+        description: "Trip end time."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: timestamp
+
+      - name: tripduration
+        description: "Duration of the trip in seconds."
+
+      - name: start_station_id
+        description: "The identifier for the start station."
+
+      - name: start_station_name
+        description: "The name of the start station."
+
+      - name: start_lat
+        description: "Trip start location latitude."
+
+      - name: start_lng
+        description: "Trip start location longitude."
+
+      - name: end_station_id
+        description: "The identifier for the end station."
+
+      - name: end_station_name
+        description: "The name of the end station."
+
+      - name: end_lat
+        description: "Trip end location latitude."
+
+      - name: end_lng
+        description: "Trip end location longitude."
+
+      - name: filename
+        description: "Name of the file from which this record was sourced."
+
+  - name: stg__central_park_weather
+    description: ""
+    columns:
+      - name: station
+        description: "The unique identifier for the weather station."
+
+      - name: name
+        description: "The name of the weather station."
+
+      - name: date
+        description: "The date of the weather observation."
+
+      - name: awnd
+        description: "Average daily wind speed."
+
+      - name: prcp
+        description: "Total daily precipitation."
+
+      - name: snow
+        description: "Total daily snowfall."
+
+      - name: snwd
+        description: "Total snow depth."
+
+      - name: tmax
+        description: "Maximum temperature for the day."
+
+      - name: tmin
+        description: "Minimum temperature for the day."
+
+      - name: filename
+        description: "Name of the file from which this record was sourced."
+
+  - name: stg__fhv_bases
+    description: "Information about the dispatching bases for For-Hire Vehicles (FHV)."
+    columns:
+      - name: base_number
+        description: "The TLC license number of the dispatching base."
+
+      - name: base_name
+        description: "The official name of the base entity."
+
+      - name: doing_business_as
+        description: "The 'doing business as' name of the base."
+
+      - name: dba_category
+        description: "The category of the base according to the DBA."
+
+      - name: filename
+        description: "Name of the file from which this record was sourced."
+
+  - name: stg__fhv_tripdata
+    description: "Trip records for For-Hire Vehicles (FHV) including dispatching base license number, pickup and dropoff times, and locations."
+    columns:
+      - name: dispatching_base_num
+        description: "The license number of the dispatching base."
+        tests:
+          - relationships:
+              to: ref('stg__fhv_bases')  
+              field: base_number
+              severity: WARN
+
+      - name: pickup_datetime
+        description: "The date and time when the passenger was picked up."
+
+      - name: dropoff_datetime
+        description: "The date and time when the passenger was dropped off."
+
+      - name: pulocationid
+        description: "The taxi zone location ID where the passenger was picked up."
+
+      - name: dolocationid
+        description: "The taxi zone location ID where the passenger was dropped off."
+
+      - name: affiliated_base_number
+        description: "The affiliated base license number for the trip."
+
+      - name: filename
+        description: "Name of the file from which this record was sourced."
+
+  - name: stg__fhvhv_tripdata
+    description: "Trip records for High-Volume For-Hire Vehicles (HVFHV) including various trip details, fares, and flags."
+    columns:
+      - name: hvfhs_license_num
+        description: "The license number of the High-Volume For-Hire Service."
+
+      - name: dispatching_base_num
+        description: "The license number of the dispatching base."
+
+      - name: originating_base_num
+        description: "The license number of the originating base."
+
+      - name: request_datetime
+        description: "The date and time when the ride was requested."
+
+      - name: on_scene_datetime
+        description: "The date and time when the vehicle arrived at the pickup location."
+
+      - name: pickup_datetime
+        description: "The date and time when the passenger was picked up."
+
+      - name: dropoff_datetime
+        description: "The date and time when the passenger was dropped off."
+
+      - name: pulocationid
+        description: "The taxi zone location ID where the passenger was picked up."
+
+      - name: dolocationid
+        description: "The taxi zone location ID where the passenger was dropped off."
+
+      - name: trip_miles
+        description: "Total miles for passenger trip."
+
+      - name: trip_time
+        description: "The duration of the trip in seconds."
+
+      - name: base_passenger_fare
+        description: "The base fare amount for the passenger, excluding additional charges."
+
+      - name: tolls
+        description: "The amount of tolls paid during the trip."
+
+      - name: bcf
+        description: "Black Card Fund."
+
+      - name: sales_tax
+        description: "The amount of sales tax charged for the trip."
+
+      - name: congestion_surcharge
+        description: "Additional charge applied for trips passing through congested areas."
+
+      - name: airport_fee
+        description: "Additional fee charged for trips to or from the airport."
+
+      - name: tips
+        description: "The amount of tips given to the driver."
+
+      - name: driver_pay
+        description: "The amount paid to the driver for the trip."
+
+      - name: shared_request_flag
+        description: "Flag indicating whether the ride was requested as a shared ride."
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: boolean
+
+      - name: shared_match_flag
+        description: "Flag indicating whether the shared ride request was successfully matched."
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: boolean
+
+      - name: access_a_ride_flag
+        description: "Flag indicating whether the trip was booked through the Access-A-Ride program."
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: boolean
+
+      - name: wav_request_flag
+        description: "Flag indicating whether the trip requested a wheelchair accessible vehicle."
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: boolean
+
+      - name: wav_match_flag
+        description: "Flag indicating whether the request for a wheelchair accessible vehicle was fulfilled."
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: boolean
+
+      - name: filename
+        description: "Name of the file from which this record was sourced."
+
+  - name: stg__green_tripdata
+    description: "Data for green taxi trips, including pickup and dropoff information, fares, and other attributes."
+    columns:
+      - name: vendorid
+        description: "The identifier for the vendor that provided the trip data."
+
+      - name: lpep_pickup_datetime
+        description: "The date and time when the trip started."
+
+      - name: lpep_dropoff_datetime
+        description: "The date and time when the trip ended."
+
+      - name: store_and_fwd_flag
+        description: "Indicates if the trip record was stored in vehicle memory before sending to the vendor because the vehicle did not have a connection to the server."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: boolean
+
+      - name: ratecodeid
+        description: "The rate code in effect for the trip."
+
+      - name: pulocationid
+        description: "The taxi zone in which the trip started."
+
+      - name: dolocationid
+        description: "The taxi zone in which the trip ended."
+
+      - name: passenger_count
+        description: "The number of passengers in the vehicle. This is a driver-entered value."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: integer
+
+      - name: trip_distance
+        description: "The elapsed trip distance in miles reported by the taximeter."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 10000000
+
+      - name: fare_amount
+        description: "The time-and-distance fare calculated by the meter."
+
+      - name: extra
+        description: "Miscellaneous extras and surcharges."
+
+      - name: mta_tax
+        description: "Metropolitan commuter transportation mobility tax."
+
+      - name: tip_amount
+        description: "Tip amount; This field is automatically populated for credit card tips. Cash tips are not included."
+
+      - name: tolls_amount
+        description: "Total amount of all tolls paid in trip."
+
+      - name: improvement_surcharge
+        description: "The 0.30 USD improvement surcharge assessed on hailed trips at the beginning of the trip."
+
+      - name: total_amount
+        description: "The total amount charged to passengers. Does not include cash tips."
+
+      - name: payment_type
+        description: "The numeric code signifying how the passenger paid for the trip."
+
+      - name: trip_type
+        description: "A code indicating the type of trip (street hail or dispatch)."
+
+      - name: congestion_surcharge
+        description: "The congestion surcharge for trips that start, end, or pass through Manhattan south of 96th Street."
+
+      - name: filename
+        description: "Name of the file from which this record was sourced."
+
+  - name: stg__yellow_tripdata
+    description: "Data for yellow taxi trips, including pickup and dropoff information, fares, and other attributes."
+    columns:
+      - name: vendorid
+        description: "The identifier for the vendor that provided the trip data."
+
+      - name: tpep_pickup_datetime
+        description: "The date and time when the trip started, as recorded by the taximeter."
+
+      - name: tpep_dropoff_datetime
+        description: "The date and time when the trip ended, as recorded by the taximeter."
+
+      - name: passenger_count
+        description: "The number of passengers in the vehicle. This is a driver-entered value."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: integer
+
+      - name: trip_distance
+        description: "The elapsed trip distance in miles reported by the taximeter."
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 10000000
+
+      - name: ratecodeid
+        description: "The rate code in effect for the trip."
+
+      - name: store_and_fwd_flag
+        description: "Indicates whether the trip record was stored in vehicle memory before sending to the vendor"
+        tests:
+          - dbt_expectations.expect_column_to_exist
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: boolean
+
+      - name: pulocationid
+        description: "The taxi zone in which the trip started."
+
+      - name: dolocationid
+        description: "The taxi zone in which the trip ended."
+
+      - name: payment_type
+        description: "The numeric code signifying how the passenger paid for the trip."
+
+      - name: fare_amount
+        description: "The time-and-distance fare calculated by the meter."
+
+      - name: extra
+        description: "Miscellaneous extras and surcharges."
+
+      - name: mta_tax
+        description: "Metropolitan commuter transportation mobility tax."
+
+      - name: tip_amount
+        description: "Tip amount; This field is automatically populated for credit card tips. Cash tips are not included."
+
+      - name: tolls_amount
+        description: "Total amount of all tolls paid in trip."
+
+      - name: improvement_surcharge
+        description: "The 0.30 USD improvement surcharge assessed trips at the beginning of the trip."
+
+      - name: total_amount
+        description: "The total amount charged to passengers. Does not include cash tips."
+
+      - name: congestion_surcharge
+        description: "The congestion surcharge for trips that start, end, or pass through Manhattan south of 96th Street."
+
+      - name: airport_fee
+        description: "The fee for trips that originate or terminate at designated New York area airports."
+
+      - name: filename
+        description: "Name of the file from which this record was sourced."

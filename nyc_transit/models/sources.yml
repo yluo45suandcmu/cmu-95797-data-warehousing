@@ -2,40 +2,59 @@ sources:
   - name: main
     tables:
       - name: bike_data
+        description: "Historical data on Citi Bike trips, excluding staff service trips, test station trips, and trips under 60 seconds."
         columns:
           - name: tripduration
+            description: "Duration of the trip in seconds."
             data_type: CHARACTER VARYING(256)
           - name: starttime
             data_type: CHARACTER VARYING(256)
           - name: stoptime
             data_type: CHARACTER VARYING(256)
           - name: start station id
+            description: "The identifier for the start station."
             data_type: CHARACTER VARYING(256)
           - name: start station name
+            description: "The name of the start station."
             data_type: CHARACTER VARYING(256)
           - name: start station latitude
             data_type: CHARACTER VARYING(256)
           - name: start station longitude
             data_type: CHARACTER VARYING(256)
           - name: end station id
+            description: "The identifier for the end station."
             data_type: CHARACTER VARYING(256)
           - name: end station name
+            description: "The name of the end station."
             data_type: CHARACTER VARYING(256)
           - name: end station latitude
             data_type: CHARACTER VARYING(256)
           - name: end station longitude
             data_type: CHARACTER VARYING(256)
           - name: bikeid
+            description: "Unique identifier for the bike used in the trip."
             data_type: CHARACTER VARYING(256)
           - name: usertype
+            description: "Type of user (Customer or Subscriber)."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['Customer', 'Subscriber', NULL, ' ']
           - name: birth year
             data_type: CHARACTER VARYING(256)
           - name: gender
+            description: "Gender of the user (0=unknown; 1=male; 2=female)."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['0', '1', '2', NULL, ' ']
           - name: ride_id
+            description: "A unique identifier for each trip."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - unique
           - name: rideable_type
+            description: "The type of bike used for the trip."
             data_type: CHARACTER VARYING(256)
           - name: started_at
             data_type: CHARACTER VARYING(256)
@@ -58,202 +77,363 @@ sources:
           - name: end_lng
             data_type: CHARACTER VARYING(256)
           - name: member_casual
+            description: "Indicates whether the ride was by a member or a casual rider."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['member', 'casual', NULL, ' ']
           - name: filename
             data_type: CHARACTER VARYING(256)
 
       - name: central_park_weather
+        description: "Daily weather observations from Central Park, including temperature, precipitation, and wind data."
         columns:
           - name: station
+            description: "The unique identifier for the weather station."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - not_null
           - name: name
+            description: "The name of the weather station."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - not_null
           - name: date
-            data_type: CHARACTER VARYING(256)
+            description: "The date of the weather observation."
+            data_type: DATE
+            tests:
+              - not_null
           - name: awnd
+            description: "Average daily wind speed."
             data_type: CHARACTER VARYING(256)
           - name: prcp
+            description: "Total daily precipitation."
             data_type: CHARACTER VARYING(256)
           - name: snow
+            description: "Total daily snowfall."
             data_type: CHARACTER VARYING(256)
           - name: snwd
+            description: "Total snow depth."
             data_type: CHARACTER VARYING(256)
           - name: tmax
+            description: "Maximum temperature for the day."
             data_type: CHARACTER VARYING(256)
           - name: tmin
+            description: "Minimum temperature for the day."
             data_type: CHARACTER VARYING(256)
           - name: filename
             data_type: CHARACTER VARYING(256)
 
       - name: fhv_bases
+        description: "Information about the dispatching bases for For-Hire Vehicles (FHV)."
         columns:
           - name: base_number
+            description: "The TLC license number of the dispatching base."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - not_null
+              - unique
+              - dbt_expectations.expect_column_to_exist
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  column_type: varchar
           - name: base_name
+            description: "The official name of the base entity."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_to_exist
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  column_type: varchar
           - name: dba
+            description: "The 'doing business as' name of the base."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - dbt_expectations.expect_column_to_exist
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  column_type: varchar
           - name: dba_category
+            description: "The category of the base according to the DBA."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - dbt_expectations.expect_column_to_exist
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  column_type: varchar
           - name: filename
+            description: "Name of the file from which this record was sourced."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - dbt_expectations.expect_column_to_exist
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  column_type: varchar
 
       - name: fhv_tripdata
+        description: "Trip records for For-Hire Vehicles (FHV) including dispatching base license number, pickup and dropoff times, and locations."
         columns:
           - name: dispatching_base_num
+            description: "The license number of the dispatching base."
             data_type: CHARACTER VARYING(256)
           - name: pickup_datetime
+            description: "The date and time when the passenger was picked up."
             data_type: TIMESTAMP
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: dropoff_datetime
+            description: "The date and time when the passenger was dropped off."
             data_type: TIMESTAMP
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: pulocationid
+            description: "The taxi zone location ID where the passenger was picked up."
             data_type: DOUBLE
           - name: dolocationid
+            description: "The taxi zone location ID where the passenger was dropped off."
             data_type: DOUBLE
           - name: sr_flag
+            description: "Flag indicating shared ride status."
             data_type: INTEGER
           - name: affiliated_base_number
+            description: "The affiliated base license number for the trip."
             data_type: CHARACTER VARYING(256)
           - name: filename
             data_type: CHARACTER VARYING(256)
 
       - name: fhvhv_tripdata
+        description: "Trip records for High-Volume For-Hire Vehicles (HVFHV) including various trip details, fares, and flags."
         columns:
           - name: hvfhs_license_num
+            description: "The license number of the High-Volume For-Hire Service."
             data_type: CHARACTER VARYING(256)
           - name: dispatching_base_num
+            description: "The license number of the dispatching base."
             data_type: CHARACTER VARYING(256)
           - name: originating_base_num
+            description: "The license number of the originating base."
             data_type: CHARACTER VARYING(256)
           - name: request_datetime
+            description: "The date and time when the ride was requested."
             data_type: TIMESTAMP
           - name: on_scene_datetime
+            description: "The date and time when the vehicle arrived at the pickup location."
             data_type: TIMESTAMP
           - name: pickup_datetime
+            description: "The date and time when the passenger was picked up."
             data_type: TIMESTAMP
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: dropoff_datetime
+            description: "The date and time when the passenger was dropped off."
             data_type: TIMESTAMP
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_to_exist
           - name: pulocationid
+            description: "The taxi zone location ID where the passenger was picked up."
             data_type: BIGINT
           - name: dolocationid
+            description: "The taxi zone location ID where the passenger was dropped off."
             data_type: BIGINT
           - name: trip_miles
+            description: "Total miles for passenger trip."
             data_type: DOUBLE
+            tests:
+              - dbt_expectations.expect_column_values_to_be_between:
+                  min_value: 0
+                  max_value: 10000
           - name: trip_time
+            description: "The duration of the trip in seconds."
             data_type: BIGINT
           - name: base_passenger_fare
+            description: "The base fare amount for the passenger, excluding additional charges."
             data_type: DOUBLE
           - name: tolls
+            description: "The amount of tolls paid during the trip."
             data_type: DOUBLE
           - name: bcf
+            description: "Black Card Fund."
             data_type: DOUBLE
           - name: sales_tax
+            description: "The amount of sales tax charged for the trip."
             data_type: DOUBLE
           - name: congestion_surcharge
+            description: "Additional charge applied for trips passing through congested areas."
             data_type: DOUBLE
           - name: airport_fee
+            description: "Additional fee charged for trips to or from the airport."
             data_type: DOUBLE
           - name: tips
+            description: "The amount of tips given to the driver."
             data_type: DOUBLE
           - name: driver_pay
+            description: "The amount paid to the driver for the trip."
             data_type: DOUBLE
           - name: shared_request_flag
+            description: "Flag indicating whether the ride was requested as a shared ride."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['Y', 'N', 'NULL', ' ']
           - name: shared_match_flag
+            description: "Flag indicating whether the shared ride request was successfully matched."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['Y', 'N', 'NULL', ' ']
           - name: access_a_ride_flag
+            description: "Flag indicating whether the trip was booked through the Access-A-Ride program."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['Y', 'N', 'NULL', ' ']
           - name: wav_request_flag
+            description: "Flag indicating whether the trip requested a wheelchair accessible vehicle."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['Y', 'N', 'NULL', ' ']
           - name: wav_match_flag
+            description: "Flag indicating whether the request for a wheelchair accessible vehicle was fulfilled."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['Y', 'N', 'NULL', ' ']
           - name: filename
             data_type: CHARACTER VARYING(256)
 
       - name: green_tripdata
+        description: "Data for green taxi trips, including pickup and dropoff information, fares, and other attributes."
         columns:
           - name: vendorid
+            description: "The identifier for the vendor that provided the trip data."
             data_type: BIGINT
           - name: lpep_pickup_datetime
+            description: "The date and time when the trip started."
             data_type: TIMESTAMP
           - name: lpep_dropoff_datetime
+            description: "The date and time when the trip ended."
             data_type: TIMESTAMP
           - name: store_and_fwd_flag
+            description: "Indicates if the trip record was stored in vehicle memory before sending to the vendor because the vehicle did not have a connection to the server."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['Y', 'N', 'NULL', ' ']
           - name: ratecodeid
+            description: "The rate code in effect for the trip."
             data_type: DOUBLE
           - name: pulocationid
+            description: "The taxi zone in which the trip started."
             data_type: BIGINT
           - name: dolocationid
+            description: "The taxi zone in which the trip ended."
             data_type: BIGINT
           - name: passenger_count
+            description: "The number of passengers in the vehicle. This is a driver-entered value."
             data_type: DOUBLE
           - name: trip_distance
+            description: "The elapsed trip distance in miles reported by the taximeter."
             data_type: DOUBLE
           - name: fare_amount
+            description: "The time-and-distance fare calculated by the meter."
             data_type: DOUBLE
           - name: extra
+            description: "Miscellaneous extras and surcharges."
             data_type: DOUBLE
           - name: mta_tax
+            description: "Metropolitan commuter transportation mobility tax."
             data_type: DOUBLE
           - name: tip_amount
+            description: "Tip amount; This field is automatically populated for credit card tips. Cash tips are not included."
             data_type: DOUBLE
           - name: tolls_amount
+            description: "Total amount of all tolls paid in trip."
             data_type: DOUBLE
           - name: ehail_fee
+            description: "The ehail fee (if applicable)."
             data_type: INTEGER
           - name: improvement_surcharge
+            description: "The 0.30 USD improvement surcharge assessed on hailed trips at the beginning of the trip."
             data_type: DOUBLE
           - name: total_amount
+            description: "The total amount charged to passengers. Does not include cash tips."
             data_type: DOUBLE
           - name: payment_type
+            description: "The numeric code signifying how the passenger paid for the trip."
             data_type: DOUBLE
           - name: trip_type
+            description: "A code indicating the type of trip (street hail or dispatch)."
             data_type: DOUBLE
           - name: congestion_surcharge
+            description: "The congestion surcharge for trips that start, end, or pass through Manhattan south of 96th Street."
             data_type: DOUBLE
           - name: filename
             data_type: CHARACTER VARYING(256)
 
       - name: yellow_tripdata
+        description: "Data for yellow taxi trips, including pickup and dropoff information, fares, and other attributes."
         columns:
           - name: vendorid
+            description: "The identifier for the vendor that provided the trip data."
             data_type: BIGINT
           - name: tpep_pickup_datetime
+            description: "The date and time when the trip started, as recorded by the taximeter."
             data_type: TIMESTAMP
           - name: tpep_dropoff_datetime
+            description: "The date and time when the trip ended, as recorded by the taximeter."
             data_type: TIMESTAMP
           - name: passenger_count
+            description: "The number of passengers in the vehicle. This is a driver-entered value."
             data_type: DOUBLE
           - name: trip_distance
+            description: "The elapsed trip distance in miles reported by the taximeter."
             data_type: DOUBLE
           - name: ratecodeid
+            description: "The rate code in effect for the trip."
             data_type: DOUBLE
           - name: store_and_fwd_flag
+            description: "Indicates whether the trip record was stored in vehicle memory before sending to the vendor, 'Y' for yes and 'N' for no."
             data_type: CHARACTER VARYING(256)
+            tests:
+              - accepted_values:
+                  values: ['Y', 'N', 'NULL', ' ']
           - name: pulocationid
+            description: "The taxi zone in which the trip started."
             data_type: BIGINT
           - name: dolocationid
+            description: "The taxi zone in which the trip ended."
             data_type: BIGINT
           - name: payment_type
+            description: "The numeric code signifying how the passenger paid for the trip."
             data_type: BIGINT
           - name: fare_amount
+            description: "The time-and-distance fare calculated by the meter."
             data_type: DOUBLE
           - name: extra
+            description: "Miscellaneous extras and surcharges."
             data_type: DOUBLE
           - name: mta_tax
+            description: "Metropolitan commuter transportation mobility tax."
             data_type: DOUBLE
           - name: tip_amount
+            description: "Tip amount; This field is automatically populated for credit card tips. Cash tips are not included."
             data_type: DOUBLE
           - name: tolls_amount
+            description: "Total amount of all tolls paid in trip."
             data_type: DOUBLE
           - name: improvement_surcharge
+            description: "The 0.30 USD improvement surcharge assessed trips at the beginning of the trip."
             data_type: DOUBLE
           - name: total_amount
+            description: "The total amount charged to passengers. Does not include cash tips."
             data_type: DOUBLE
           - name: congestion_surcharge
+            description: "The congestion surcharge for trips that start, end, or pass through Manhattan south of 96th Street."
             data_type: DOUBLE
           - name: airport_fee
+            description: "The fee for trips that originate or terminate at designated New York area airports."
             data_type: DOUBLE
           - name: filename
+            description: "The name of the file from which this data was sourced."
             data_type: CHARACTER VARYING(256)

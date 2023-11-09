@@ -8,12 +8,12 @@ with source as (
 renamed as (
     
     select
-        dispatching_base_num,
+        trim(upper(dispatching_base_num)) as  dispatching_base_num, --some ids are lowercase
         pickup_datetime,
         dropOff_datetime,
         PUlocationID,
         DOlocationID,
-        Affiliated_base_number,
+        trim(upper(affiliated_base_number)) as affiliated_base_number,
         filename
     
     from source

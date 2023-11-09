@@ -15,7 +15,7 @@ renamed as (
         ratecodeid,
         pulocationid,
         dolocationid,
-        passenger_count,
+        passenger_count::int as passenger_count,
         trip_distance,
         fare_amount,
         extra,
