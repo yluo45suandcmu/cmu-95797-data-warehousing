@@ -7,10 +7,10 @@ WITH weather_data AS (
 
 bike_trip_counts AS (
     SELECT
-        date,
+        CAST(started_at_ts AS DATE) as date,
         COUNT(*) AS number_of_trips
     FROM {{ ref('mart__fact_all_bike_trips') }}
-    GROUP BY date
+    GROUP BY CAST(started_at_ts AS DATE) 
 ),
 
 precip_days AS (
@@ -33,7 +33,7 @@ averages AS (
 SELECT
     avg_trips_day_before,
     avg_trips_on_day,
-    CASE WHEN avg_trips_day_before > avg_trips_on_day THEN 'More trips day before'
-         ELSE 'More trips or equal on day of/less trips day before' END AS comparison
+    CASE WHEN avg_trips_day_before > avg_trips_on_day THEN 'More trips on day before prcp or snow'
+         ELSE 'More trips or equal on day with prcp or snow' END AS comparison
 FROM averages
 

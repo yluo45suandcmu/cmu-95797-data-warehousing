@@ -1,0 +1,2 @@
+'avg_trips_day_before','avg_trips_on_day','comparison'
+5489.6300000000001089,5503.582089552238358,'More trips or equal on day with prcp or snow'

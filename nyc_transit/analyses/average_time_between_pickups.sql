@@ -2,7 +2,7 @@ WITH trip_times AS (
     SELECT
         l.zone,
         t.pickup_datetime,
-        LEAD(t.pickup_datetime, 1) OVER (
+        LEAD(t.pickup_datetime) OVER (
             PARTITION BY l.zone
             ORDER BY t.pickup_datetime
         ) AS next_pickup_time
@@ -13,7 +13,7 @@ WITH trip_times AS (
 pickup_intervals AS (
     SELECT
         zone,
-        EXTRACT(EPOCH FROM (next_pickup_time - pickup_datetime)) / 60 AS interval_minutes -- Time difference in minutes
+        datediff('minute', pickup_datetime, next_pickup_time) as interval_minutes
     FROM trip_times
     WHERE next_pickup_time IS NOT NULL
 )
